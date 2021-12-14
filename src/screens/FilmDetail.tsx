@@ -1,103 +1,86 @@
 import {NavigationProp, RouteProp} from '@react-navigation/native';
-import React from 'react';
-import {StyleSheet, View, ScrollView, Alert, FlatList, TouchableOpacity} from 'react-native';
-import {Card, Paragraph, Text} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
+import {Film} from '~types';
+import {CHARACTER} from '~navigations/screens';
+import Information, {InformationData} from '~components/organisms/Information';
+import {SliderData} from '~components/molecules/Slider';
 import {getFormattedDate} from '~helpers/utils';
-import {CharactersEntity, FilmsEntity} from '~types';
-import Icon from "react-native-vector-icons/Ionicons";
-import { color } from "~theme";
-import { CHARACTER } from "~navigations/screens";
-
+import {useQuery} from '@apollo/client';
+import {GET_FILM} from '~graphQl/query';
 
 interface Props {
   navigation: NavigationProp<any, string, any, any>;
   route: RouteProp<
     {
       params: {
-        film: FilmsEntity;
+        filmId: string;
       };
     },
     'params'
   >;
 }
 
-const CountIndicator = (props: {
-  iconName: string;
-  text: string;
-  count: number;
-}) => {
-  const {iconName, text, count} = props;
-
-  return (
-    <View style={{width: '33%'}}>
-      <Card style={{margin: 5, alignItems: 'center', paddingVertical: 3}}>
-        <Icon style={{alignSelf: 'center'}} name={iconName} size={45} color={color.primary} />
-        <View style={{alignSelf: 'stretch'}}>
-          <Text style={{textAlign: 'center', fontSize: 18}}>{text}</Text>
-          <Text style={{textAlign: 'center', fontSize: 18}}>{count}</Text>
-        </View>
-      </Card>
-    </View>
-  );
-};
-
 const FilmDetail: React.FC<Props> = props => {
   const {navigation, route} = props;
-  const {film} = route.params;
-  const characters = film?.characterConnection?.characters || [] as CharactersEntity[]
+  const {filmId} = route.params;
+  const [filmData, setFilmData] = useState<InformationData>();
+  const [characters, setCharacters] = useState<SliderData[]>();
 
-  const goToCharacterDetail = (characterId: string)=>navigation.navigate(CHARACTER, {characterId})
+  const {loading, error, data} = useQuery<Film>(GET_FILM, {
+    variables: {filmId},
+  });
+  const film = data?.film;
+
+  useEffect(() => {
+    if (!film) return;
+
+    //Set up data
+    const informationData: InformationData = {
+      title: film.title,
+      subtitle: `Release date: ${getFormattedDate(film.releaseDate)}`,
+      firstIndicatorIcon: 'people-circle-outline',
+      firstIndicatorText: 'Species',
+      firstIndicatorValue: film.speciesConnection.totalCount.toString(),
+      secondIndicatorIcon: 'ios-planet-outline',
+      secondIndicatorText: 'Planets',
+      secondIndicatorValue: film.planetConnection.totalCount.toString(),
+      thirdIndicatorIcon: 'rocket-outline',
+      thirdIndicatorText: 'Vehicles',
+      thirdIndicatorValue: film.vehicleConnection.totalCount.toString(),
+      description: film.openingCrawl,
+    };
+    setFilmData(informationData);
+
+    //Set up slider data
+    const filmCharacters = film?.characterConnection?.characters;
+    if (!filmCharacters) return;
+    const sliderData: SliderData[] = filmCharacters.map(x => ({
+      id: x.id,
+      text: x.name,
+    }));
+    setCharacters(sliderData);
+  }, [film]);
+
+  //@ts-ignore
+    const goToCharacterDetail = (characterId: string) => navigation.push(CHARACTER, {characterId});
 
   return (
-    <ScrollView style={{flex: 1}}>
-      <View style={styles.container}>
-        <View style={{width: '100%', marginVertical: 5}}>
-          <Card style={{margin: 5}}>
-            <Card.Title
-              titleStyle={{fontSize: 25}}
-              subtitleStyle={{fontSize: 17}}
-              title={film.title}
-              subtitle={`Release date: ${getFormattedDate(film.releaseDate)}`}
-            />
-          </Card>
-        </View>
-        <View style={{width: '100%', marginBottom: 5, flexDirection:'row'}}>
-          <CountIndicator iconName={'people-circle-outline'} text={'Species'} count={film.speciesConnection.totalCount} />
-          <CountIndicator iconName={'ios-planet-outline'} text={'Planets'} count={film.planetConnection.totalCount} />
-          <CountIndicator iconName={'rocket-outline'} text={'Vehicles'} count={film.vehicleConnection.totalCount} />
-        </View>
-        <View style={{width: '100%', marginBottom: 5}}>
-          <Card style={{margin: 5}}>
-            <Card.Content>
-              <Paragraph style={{textAlign: 'center'}}>
-                {film.openingCrawl}
-              </Paragraph>
-            </Card.Content>
-          </Card>
-        </View>
-        <FlatList
-          data={characters}
-          keyExtractor={x=>x.id}
-          renderItem={({item})=>(
-            <TouchableOpacity onPress={()=>goToCharacterDetail(item.id)}>
-            <Card style={{padding: 5, margin: 5}}>
-              <Card.Content>
-                <Paragraph style={{fontSize: 17}}>
-                  {item.name}
-                </Paragraph>
-              </Card.Content>
-            </Card>
-          </TouchableOpacity>
-          )}
-          horizontal={true}
+    <ScrollView style={styles.scroll}>
+      {filmData && characters && (
+        <Information
+          data={filmData}
+          sliderData={characters}
+          onSliderItemPress={goToCharacterDetail}
+          loading={loading}
         />
-      </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', paddingBottom: 10},
+  scroll: {flex: 1},
 });
 
 export default FilmDetail;

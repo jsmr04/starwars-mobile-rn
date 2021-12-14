@@ -42,7 +42,7 @@ const Film: React.FC<Props> = (props) => {
   }, [error]);
 
   //Go to film detail screen
-  const goToFilmDetail = (film: FilmsEntity)=>navigation.navigate(FILM_DETAIL, {film: film})
+  const goToFilmDetail = (film: FilmsEntity)=>navigation.navigate(FILM_DETAIL, {filmId: film.id})
 
   return (
     <SafeAreaView style={{flex: 1}}>

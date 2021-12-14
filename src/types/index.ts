@@ -7,6 +7,10 @@ export interface Root {
 export interface AllFilms {
   films?: FilmsEntity[] | null;
 }
+export interface Film {
+  film: FilmsEntity
+}
+
 export interface FilmsEntity {
   id: string;
   title: string;
@@ -23,7 +27,29 @@ export interface Connection {
 export interface CharacterConnection {
   characters?: CharactersEntity[] | null;
 }
+// export interface CharactersEntity {
+//   id: string;
+//   name: string;
+// }
+
+export interface Character {
+  person: CharactersEntity;
+}
+
 export interface CharactersEntity {
   id: string;
   name: string;
+  birthYear: string;
+  height: number;
+  mass: number;
+  homeworld: Homeworld;
+  filmConnection: FilmConnection;
+}
+
+export interface Homeworld {
+  name: string;
+}
+
+export interface FilmConnection {
+  films?: (FilmsEntity)[] | null;
 }

@@ -3,8 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {EPISODES_STACK, LIKED_CHARACTERS_STACK} from '~navigations/screens';
 
-//Stacks
-import EpisodesStack from '~navigations/Stacks/Episodes';
+//Screens
+import EpisodesStack from '~screens/Episodes';
 import LikedCharactersScreen from '~screens/LikedCharacters';
 
 const Tab = createBottomTabNavigator();
@@ -19,6 +19,7 @@ const HomeTabNavigator = () => {
           tabBarIcon: ({focused, color, size}) => (
             <Icon name="film" size={24} color={color} />
           ),
+          title: 'Episodes'
         }}
       />
       <Tab.Screen
@@ -28,6 +29,7 @@ const HomeTabNavigator = () => {
           tabBarIcon: ({focused, color, size}) => (
             <Icon name="person" size={24} color={color} />
           ),
+          title: 'Liked Characters'
         }}
       />
     </Tab.Navigator>

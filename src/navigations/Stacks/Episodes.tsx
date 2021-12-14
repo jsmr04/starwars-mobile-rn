@@ -36,8 +36,6 @@ const EpisodesStack = () => {
           </TouchableOpacity>
   };
 
-  console.log(episodesSortingMode)
-
   return (
     <Stack.Navigator >
       <Stack.Screen
