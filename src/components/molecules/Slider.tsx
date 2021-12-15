@@ -8,18 +8,18 @@ export interface SliderData {
 }
 
 interface Props {
-  onCharacterPress: (characterId: string) => void;
+  onSliderPress: (id: string, text: string) => void;
   data: SliderData[];
 }
 
 const CharacterSlider: React.FC<Props> = props => {
-  const {onCharacterPress, data} = props;
+  const {onSliderPress, data} = props;
   return (
     <FlatList
       data={data}
       keyExtractor={x => x.id}
       renderItem={({item}) => (
-        <TouchableOpacity onPress={() => onCharacterPress(item.id)}>
+        <TouchableOpacity onPress={() => onSliderPress(item.id, item.text)}>
           <Card style={styles.card}>
             <Card.Content>
               <Paragraph style={styles.text}>{item.text}</Paragraph>

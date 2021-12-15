@@ -1,7 +1,7 @@
 import {PayloadAction, createSlice} from "@reduxjs/toolkit";
 
 type ComponentActions = {
-  episodesSortingMode: 'asc' | 'desc'
+  episodesSortingMode?: 'asc' | 'desc'
 }
 // Default
 const initialState: ComponentActions  = {
@@ -16,6 +16,7 @@ const componentActionsSlice = createSlice({
     sortEpisodes: (state, action: PayloadAction<ComponentActions>) => {
         state.episodesSortingMode = action.payload.episodesSortingMode
     },
+
   },
 });
 

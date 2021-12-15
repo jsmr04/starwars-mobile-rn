@@ -63,7 +63,7 @@ const FilmDetail: React.FC<Props> = props => {
   }, [film]);
 
   //@ts-ignore
-    const goToCharacterDetail = (characterId: string) => navigation.push(CHARACTER, {characterId});
+    const goToCharacterDetail = (characterId: string, name: string) => navigation.push(CHARACTER, {characterId, name});
 
   return (
     <ScrollView style={styles.scroll}>

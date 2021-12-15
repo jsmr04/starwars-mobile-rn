@@ -21,7 +21,7 @@ export interface InformationData {
 }
 
 interface Props {
-  onSliderItemPress: (id: string) => void;
+  onSliderItemPress: (id: string, text: string) => void;
   sliderData: SliderData[];
   data: InformationData;
   loading: boolean;
@@ -75,7 +75,7 @@ const Information: React.FC<Props> = props => {
       
       <Slider
         data={sliderData}
-        onCharacterPress={onSliderItemPress}
+        onSliderPress={onSliderItemPress}
       />
     </View>
   );

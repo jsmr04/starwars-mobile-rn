@@ -8,6 +8,8 @@ import Information, {InformationData} from '~components/organisms/Information';
 import {SliderData} from '~components/molecules/Slider';
 import {showErrorAlert} from '~helpers/errorHelper';
 import {FILM_DETAIL} from '~navigations/screens';
+import {useDispatch, useSelector} from 'react-redux';
+import { setCurrentCharacterId } from "~redux/reducers/likedCharacters";
 
 interface Props {
   navigation: NavigationProp<any, string, any, any>;
@@ -15,6 +17,7 @@ interface Props {
     {
       params: {
         characterId: string;
+        name: string;
       };
     },
     'params'
@@ -22,8 +25,9 @@ interface Props {
 }
 
 const FilmDetail: React.FC<Props> = props => {
+  const dispatch = useDispatch()
   const {navigation, route} = props;
-  const {characterId} = route.params;
+  const {characterId, name} = route.params;
   const [characterData, setCharacterData] = useState<InformationData>();
   const [films, setFilms] = useState<SliderData[]>();
   const {loading, error, data} = useQuery<Character>(GET_CHARACTER, {
@@ -63,6 +67,10 @@ const FilmDetail: React.FC<Props> = props => {
   useEffect(() => {
     if (error) showErrorAlert(error);
   }, [error]);
+
+  useEffect(()=>{
+    dispatch(setCurrentCharacterId({currentCharacter: {id: characterId, name: name}}))
+  },[navigation])
 
   //@ts-ignore
   const goToFilmDetail = (filmId: string) => navigation.push(FILM_DETAIL, {filmId});
