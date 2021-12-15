@@ -6,16 +6,15 @@ import SplashScreen from "react-native-splash-screen";
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import * as config from "~configuration";
 
 const App = () => {
   useEffect(() => {
     SplashScreen.hide()
   }, [])
 
-  //The url provided is not working from Postman and the client either (works only on browser)'https://graphql.org/swapi-graphql'
-  //I'm using https://swapi-graphql.netlify.app/.netlify/functions/index instead, same data and schema (I found it in Apollo Client documentation)
   const client = new ApolloClient({
-    uri: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+    uri: config.BASE_URL,
     cache: new InMemoryCache()
   })
 

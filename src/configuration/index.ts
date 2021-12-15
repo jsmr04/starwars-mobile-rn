@@ -1,10 +1,7 @@
-//TODO: Uncomment
-// import { MY_PARAMETER } from "@env";
+//The url provided is not working from Postman and the client either (works only on browser)'https://graphql.org/swapi-graphql'
+//I'm using https://swapi-graphql.netlify.app/.netlify/functions/index instead, same data and schema (I found it in Apollo Client documentation)
+const BASE_URL = 'https://swapi-graphql.netlify.app/.netlify/functions/index'
 
-const BASE_URL = 'http://localhost:5000'
-const WEBSITE = "google.com"
-
-export default {
-    BASE_URL,
-    WEBSITE
+export {
+    BASE_URL
 }

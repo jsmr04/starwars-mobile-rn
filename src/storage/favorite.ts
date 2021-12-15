@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const save = async (key: string, data: string) => {
   try {
-    await AsyncStorage.setItem(key, JSON.stringify(data));
+    await AsyncStorage.setItem(key, data);
   } catch (error) {
       console.log(error)
   }
@@ -26,8 +26,8 @@ export const getAll = async () => {
     const result = await Promise.all(promises)
     
     if (!result) return []
-      
     const favorites = result.reduce((acc: string[], x) => (x ? acc.concat(x) : acc),[])
+    
     return favorites
     
   } catch (error) {
